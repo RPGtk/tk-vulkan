@@ -1,0 +1,41 @@
+on:
+    pull_request:
+    push:
+        branches:
+            - '*'
+            - '*/*'
+            - '**'
+            - '|badges'
+        paths-ignore:
+            - '.github/**'
+            - 'LICENSE.md'
+            - 'README.md'
+            - 'CODE_OF_CONDUCT.md'
+            - '.**'
+permissions:
+    contents: write
+name: Generate Badges
+jobs:
+    generate_loc_badge:
+        name: LOC Badge
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Generate Badge
+              uses: shadowmoose/GHA-LoC-Badge@1.0.0
+              id: badge
+              with:
+                debug: true
+                directory: ./
+                badge: ./output/loc.svg
+                patterns: '**/*.c|**/*.h|**/*.cmake|CMakeLists.txt|CMakePresets.json|Build'
+            - name: Deploy Icon
+              uses: peaceiris/actions-gh-pages@v3
+              with:
+                publish_dir: ./output
+                publish_branch: badges
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+                user_name: 'github-actions[bot]'
+                user_email: 'github-actions[bot]@users.noreply.github.com'
+                commit_message: 'Created LOC icon :)'
