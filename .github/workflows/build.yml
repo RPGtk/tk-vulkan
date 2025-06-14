@@ -18,6 +18,12 @@ jobs:
         compiler: [gcc, clang]
     steps:
     - uses: actions/checkout@v4
+    - name: Prepare Vulkan
+      uses: jakoch/install-vulkan-sdk-action@v1
+      with:
+          install_runtime: true
+          cache: true
+          stripdown: true
     - name: Install Dependencies
       run: |
         sudo apt update
