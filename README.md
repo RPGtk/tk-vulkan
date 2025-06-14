@@ -4,7 +4,7 @@
 
 ### TKVulkan
 ![workflow_badge](https://img.shields.io/github/actions/workflow/status/RPGtk/tk-vulkan/build.yml?label=Build%20Test)
-![loc_badge](https://github.com/R-TK1/tk-vulkan/blob/badges/loc.svg)
+![loc_badge](https://github.com/RPGtk/tk-vulkan/blob/badges/loc.svg)
 ![latest_release_badge](https://img.shields.io/github/v/release/RPGtk/tk-vulkan?label=Experimental&include_preleases=true)
 
 A small, very specialized [Vulkan](https://www.vulkan.org/) wrapper to make it easier to carry out certain operations like initialization and [windowing system integration](https://docs.vulkan.org/guide/latest/wsi.html). This is not a full-fledged [graphics library](https://en.wikipedia.org/wiki/Graphics_library); it's simply a shallow Vulkan wrapper. The only logic not directly related to Vulkan is the [SPIR-V](https://en.wikipedia.org/wiki/Standard_Portable_Intermediate_Representation) shader [compilation](https://github.com/KhronosGroup/glslang) interface, provided as a standalone executable (for the purpose of deletion once its tasks are complete).
