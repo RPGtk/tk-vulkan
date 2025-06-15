@@ -186,28 +186,28 @@ bool tkvul_createSurface(void **data)
     return true;
 }
 
-VkSurfaceFormatKHR *getSurfaceFormats(void)
+VkSurfaceFormatKHR *getSurfaceFormats(VkPhysicalDevice device)
 {
     if (pFormats != nullptr) return pFormats;
 
-    vkGetPhysicalDeviceSurfaceFormatsKHR(pPhysicalDevice, pSurface,
-                                         &pFormatCount, nullptr);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, pSurface, &pFormatCount,
+                                         nullptr);
     if (pFormatCount == 0) return nullptr;
     pFormats = malloc(sizeof(VkSurfaceFormatKHR) * pFormatCount);
-    vkGetPhysicalDeviceSurfaceFormatsKHR(pPhysicalDevice, pSurface,
-                                         &pFormatCount, pFormats);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, pSurface, &pFormatCount,
+                                         pFormats);
     return pFormats;
 }
 
-VkPresentModeKHR *getSurfaceModes(void)
+VkPresentModeKHR *getSurfaceModes(VkPhysicalDevice device)
 {
     if (pModes != nullptr) return pModes;
-    vkGetPhysicalDeviceSurfacePresentModesKHR(pPhysicalDevice, pSurface,
-                                              &pModeCount, nullptr);
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device, pSurface, &pModeCount,
+                                              nullptr);
     if (pModeCount == 0) return nullptr;
     pModes = malloc(sizeof(VkPresentModeKHR) * pModeCount);
-    vkGetPhysicalDeviceSurfacePresentModesKHR(pPhysicalDevice, pSurface,
-                                              &pModeCount, pModes);
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device, pSurface, &pModeCount,
+                                              pModes);
     return pModes;
 }
 
@@ -325,7 +325,8 @@ uint32_t scoreDevice(VkPhysicalDevice device, const char **extensions,
         return 0;
     }
 
-    if (getSurfaceFormats() == nullptr || getSurfaceModes() == nullptr)
+    if (getSurfaceFormats(device) == nullptr ||
+        getSurfaceModes(device) == nullptr)
     {
         fprintf(stderr, "Failed to find surface format/present modes.\n");
         return 0;
