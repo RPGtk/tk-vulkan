@@ -10,7 +10,7 @@
 ################################################################################
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project("tkvulkan" LANGUAGES C VERSION 0.0.0.5)
+project("tkvulkan" LANGUAGES C VERSION 0.0.0.6)
 
 # We only support Linux. Everything else can go kick rocks.
 if(NOT UNIX OR APPLE)

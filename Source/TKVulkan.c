@@ -221,7 +221,8 @@ static void compileShader(const char *name, size_t *size, uint32_t **bytes)
     (void)fseek(file, 0, SEEK_SET);
 
     *bytes = malloc(*size);
-    (void)fread(*bytes, 1, *size, file);
+    long read = fread(*bytes, 1, *size, file);
+    (void)read; // TODO: Implement check.
 
     (void)fclose(file);
 }
