@@ -501,3 +501,15 @@ bool tkvul_initialize(uint32_t framebufferWidth, uint32_t framebufferHeight)
     if (!createDevice(framebufferWidth, framebufferHeight)) return false;
     return true;
 }
+
+bool tkvul_connectSurface(void **data)
+{
+#ifdef WAYLAND
+    pSurface = tkvul_waylandCreate(pInstance, data[0], data[1]);
+    if (pSurface == nullptr) return false;
+#elifdef X11
+// TODO: Implement X11.
+#endif
+
+    return true;
+}
