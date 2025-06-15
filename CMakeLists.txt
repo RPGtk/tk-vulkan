@@ -14,7 +14,7 @@ project("TKVulkan" LANGUAGES C VERSION 0.0.0.8)
 
 include(Helpers)
 run_checks()
-create_target()
+create_target(OFF)
 
 find_package(Vulkan REQUIRED COMPONENTS glslang)
 target_link_libraries(${PROJECT_NAME} ${Vulkan_LIBRARIES})
