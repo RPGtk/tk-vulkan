@@ -18,16 +18,16 @@ jobs:
         compiler: [gcc, clang]
     steps:
     - uses: actions/checkout@v4
+    - name: Install Dependencies
+      run: |
+        sudo apt update
+        sudo apt install libwayland-dev
     - name: Prepare Vulkan
       uses: jakoch/install-vulkan-sdk-action@v1
       with:
           install_runtime: true
           cache: true
           stripdown: true
-    - name: Install Dependencies
-      run: |
-        sudo apt update
-        sudo apt install libwayland-dev
     - name: Configure
       run: cmake -B ${{ github.workspace }}/buildDirectory -DCMAKE_C_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -S ${{ github.workspace }}
     - name: Build
