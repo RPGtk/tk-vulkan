@@ -10,7 +10,7 @@
 ################################################################################
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project("tkvulkan" LANGUAGES C VERSION 0.0.0.3)
+project("tkvulkan" LANGUAGES C VERSION 0.0.0.4)
 
 # We only support Linux. Everything else can go kick rocks.
 if(NOT UNIX OR APPLE)
@@ -25,6 +25,11 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 set(TKVUL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source")
 set(TKVUL_SOURCES "${TKVUL_SOURCE_DIR}/TKVulkan.c")
+if(${TKVUL_UNDERLYING})
+    list(APPEND TKVUL_SOURCES "${TKVUL_SOURCE_DIR}/Targets/Wayland.c")
+else()
+    list(APPEND TKVUL_SOURCES "${TKVUL_SOURCE_DIR}/Targets/X11.c")
+endif()
 
 add_library(${PROJECT_NAME} STATIC ${TKVUL_SOURCES})
 
@@ -66,3 +71,5 @@ else()
     target_compile_definitions(${PROJECT_NAME} PRIVATE X11)
     # TODO: X11.
 endif()
+
+file(COPY_FILE "${CMAKE_CURRENT_SOURCE_DIR}/Include/TKVulkan.h" "${CMAKE_CURRENT_BINARY_DIR}/TKVulkan.h")
