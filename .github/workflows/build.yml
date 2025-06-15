@@ -28,12 +28,6 @@ jobs:
           install_runtime: true
           cache: true
           stripdown: true
-    - name: Prepare Clang
-      if: matrix.compiler == clang
-      uses: egor-tensin/setup-clang@v1
-      with:
-        version: latest
-        platform: x64
     - name: Configure
       run: cmake -B ${{ github.workspace }}/buildDirectory -DCMAKE_C_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -S ${{ github.workspace }}
     - name: Build
