@@ -216,14 +216,14 @@ static void compileShader(const char *name, size_t *size, uint32_t **bytes)
 {
     FILE *file = fopen(name, "r");
 
-    fseek(file, 0, SEEK_END);
+    (void)fseek(file, 0, SEEK_END);
     *size = ftell(file);
-    fseek(file, 0, SEEK_SET);
+    (void)fseek(file, 0, SEEK_SET);
 
     *bytes = malloc(*size);
-    fread(*bytes, 1, *size, file);
+    (void)fread(*bytes, 1, *size, file);
 
-    fclose(file);
+    (void)fclose(file);
 }
 
 bool createPipeline(void)
