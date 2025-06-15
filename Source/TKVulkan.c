@@ -179,6 +179,7 @@ bool tkvul_createSurface(void **data)
     pSurface = tkvul_waylandCreate(pInstance, data[0], data[1]);
     if (pSurface == nullptr) return false;
 #elifdef X11
+    (void)data;
     // TODO: Implement X11.
 #endif
 
