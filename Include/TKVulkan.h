@@ -1,12 +1,9 @@
 #ifndef TKVUL_MAIN_H
 #define TKVUL_MAIN_H
 
-typedef enum
-{
-    TKVUL_NO_ERROR
-} tkvul_error_t;
+#include <stdint.h>
 
-tkvul_error_t tkvul_create(void);
-void tkvul_destroy(void);
+bool tkvul_initialize(const char *name, uint32_t version,
+                      uint32_t framebufferWidth, uint32_t framebufferHeight);
 
 #endif // TKVUL_MAIN_H

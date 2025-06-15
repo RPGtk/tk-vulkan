@@ -1,6 +1,8 @@
 ################################################################################
 ## The configuration files for the tk-vulkan project. This requires CMake 
-## version 3.10 or higher.
+## version 3.10 or higher. The following options affect this files output:
+##
+## TKVUL_UNDERLYING<ON> - Toggle Wayland (ON) or X11 (OFF) mode.
 ##
 ## Copyright (c) 2025 - RPGtk Team
 ## This source code is under the GPLv3. For information on what that entails,
@@ -8,12 +10,14 @@
 ################################################################################
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project("tkvulkan" LANGUAGES C VERSION 0.0.0.0)
+project("tkvulkan" LANGUAGES C VERSION 0.0.0.2)
 
 # We only support Linux. Everything else can go kick rocks.
 if(NOT UNIX OR APPLE)
     message(FATAL_ERROR "This operating system is not supported by tk-vulkan.")
 endif()
+
+option(TKVUL_UNDERLYING "Toggle Wayland (ON) or X11 (OFF) mode." ON)
 
 # https://en.wikipedia.org/wiki/C23_(C_standard_revision)
 set(CMAKE_C_STANDARD 23)
@@ -30,7 +34,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_compile_options(${PROJECT_NAME} PUBLIC -Wall -Werror -Wpedantic -Wextra)
 if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
     # https://cmake.org/cmake/help/latest/variable/CMAKE_EXPORT_COMPILE_COMMANDS.html
-    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+    set_target_properties(${PROJECT_NAME} PROPERTIES EXPORT_COMPILE_COMMANDS ON)
 
     target_compile_options(${PROJECT_NAME} PUBLIC -Og -g3 -ggdb -fsanitize=address 
         -fsanitize=pointer-compare  -fsanitize=leak -fsanitize=pointer-subtract 
@@ -53,3 +57,12 @@ endif()
 find_package(Vulkan REQUIRED COMPONENTS glslang)
 target_link_libraries(${PROJECT_NAME} ${Vulkan_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${Vulkan_INCLUDE_DIRS})
+
+if(${TKWIN_UNDERLYING})
+    target_compile_definitions(${PROJECT_NAME} PRIVATE WAYLAND)
+    find_package(Wayland REQUIRED)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${Wayland_INCLUDE_DIRS})
+else()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE X11)
+    # TODO: X11.
+endif()
