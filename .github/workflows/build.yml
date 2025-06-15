@@ -29,6 +29,7 @@ jobs:
           cache: true
           stripdown: true
     - name: Prepare Clang
+      if: matrix.compiler == clang
       uses: egor-tensin/setup-clang@v1
       with:
         version: latest
