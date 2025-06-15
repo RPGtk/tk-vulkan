@@ -343,8 +343,8 @@ bool createDevice(uint32_t framebufferWidth, uint32_t framebufferHeight)
         malloc(sizeof(VkPhysicalDevice) * physicalCount);
     vkEnumeratePhysicalDevices(pInstance, &physicalCount, physicalDevices);
 
-    constexpr size_t extensionCount = 1;
-    const char *extensions[extensionCount] = {"VK_KHR_swapchain"};
+    const size_t extensionCount = 1;
+    const char *extensions[1] = {"VK_KHR_swapchain"};
 
     VkPhysicalDevice currentChosen = nullptr;
     uint32_t bestScore = 0;
