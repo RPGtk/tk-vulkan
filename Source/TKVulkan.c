@@ -173,10 +173,10 @@ bool createSwapchain(uint32_t framebufferWidth, uint32_t framebufferHeight)
     return true;
 }
 
-bool createSurface(void)
+bool tkvul_createSurface(void **data)
 {
 #ifdef WAYLAND
-    pSurface = tkvul_waylandCreate(instance);
+    pSurface = tkvul_waylandCreate(pInstance, data[0], data[1]);
     if (pSurface == nullptr) return false;
 #elifdef X11
     // TODO: Implement X11.
@@ -456,8 +456,7 @@ bool createDevice(uint32_t framebufferWidth, uint32_t framebufferHeight)
     return true;
 }
 
-bool tkvul_initialize(const char *name, uint32_t version,
-                      uint32_t framebufferWidth, uint32_t framebufferHeight)
+bool tkvul_connect(const char *name, uint32_t version)
 {
     VkApplicationInfo applicationInfo = {0};
     applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -493,7 +492,11 @@ bool tkvul_initialize(const char *name, uint32_t version,
         return false;
     }
 
-    if (!createSurface()) return false;
+    return true;
+}
+
+bool tkvul_initialize(uint32_t framebufferWidth, uint32_t framebufferHeight)
+{
     if (!createDevice(framebufferWidth, framebufferHeight)) return false;
     return true;
 }
