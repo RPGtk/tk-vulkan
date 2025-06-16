@@ -10,15 +10,21 @@
 ################################################################################
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project("TKVulkan" LANGUAGES C VERSION 0.0.0.11)
+project("TKVulkan" LANGUAGES C VERSION 0.0.0.12)
 
 include(Helpers)
 run_checks()
 create_target(OFF)
 
-find_package(Vulkan REQUIRED COMPONENTS glslang)
-target_link_libraries(${PROJECT_NAME} ${Vulkan_LIBRARIES})
+find_package(Vulkan REQUIRED)
+find_package(glslang CONFIG REQUIRED)
+# We just hope that if GLSLang is found, glslang-default-resource-limits is
+# also found.
+target_link_libraries(${PROJECT_NAME} ${Vulkan_LIBRARIES} ${Vulkan_glslang_LIBRARY} "glslang-default-resource-limits")
 target_include_directories(${PROJECT_NAME} PRIVATE ${Vulkan_INCLUDE_DIRS})
+
+add_dependencies(${PROJECT_NAME} TKAssets)
+target_link_libraries(${PROJECT_NAME} TKAssets)
 
 if(${TK_UNDERLYING})
     target_compile_definitions(${PROJECT_NAME} PRIVATE WAYLAND)
