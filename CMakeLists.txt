@@ -10,7 +10,7 @@
 ################################################################################
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project("TKVulkan" LANGUAGES C VERSION 0.0.0.14)
+project("TKVulkan" LANGUAGES C VERSION 0.0.0.15)
 
 include(Helpers)
 run_checks(ON)

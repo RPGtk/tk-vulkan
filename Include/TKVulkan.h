@@ -1,5 +1,5 @@
-#ifndef TKVUL_MAIN_H
-#define TKVUL_MAIN_H
+#ifndef TKVULKAN_MAIN_H
+#define TKVULKAN_MAIN_H
 
 #include <stdint.h>
 #define __need_size_t
@@ -13,4 +13,4 @@ bool tkvul_initialize(uint32_t framebufferWidth, uint32_t framebufferHeight);
 
 bool tkvul_compileShaders(const char **names, size_t count);
 
-#endif // TKVUL_MAIN_H
+#endif // TKVULKAN_MAIN_H
