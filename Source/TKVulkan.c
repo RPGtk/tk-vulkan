@@ -5,9 +5,9 @@
 #include <vulkan/vulkan.h>
 
 #ifdef WAYLAND
-#include <Targets/Wayland.h>
+#include <Include/Wayland.h>
 #elifdef X11
-#include <Targets/X11.h>
+#include <Include/X11.h>
 #endif
 
 static VkInstance pInstance = nullptr;
