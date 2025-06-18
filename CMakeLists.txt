@@ -19,11 +19,11 @@ link_external(Vulkan COMPONENTS glslang)
 
 # We just hope that if GLSLang is found, glslang-default-resource-limits is
 # also found.
-target_link_libraries(${PROJECT_NAME} PRIVATE "glslang-default-resource-limits.so")
+add_library(glslang-default-resource-limits SHARED IMPORTED)
 
-# find_package(Vulkan REQUIRED COMPONENTS glslang)
-# target_link_libraries(${PROJECT_NAME} ${Vulkan_LIBRARIES} ${Vulkan_glslang_LIBRARY} "glslang-default-resource-limits")
-# target_include_directories(${PROJECT_NAME} PRIVATE ${Vulkan_INCLUDE_DIRS})
+cmake_path(GET Vulkan_glslang_LIBRARY PARENT_PATH GLSLANG_LIB_DIR)
+set_target_properties(glslang-default-resource-limits PROPERTIES IMPORTED_LOCATION "${GLSLANG_LIB_DIR}/libglslang-default-resource-limits.so")
+target_link_libraries(${PROJECT_NAME} PRIVATE glslang-default-resource-limits)
 
 add_dependencies(${PROJECT_NAME} TKAssets)
 target_link_libraries(${PROJECT_NAME} PRIVATE TKAssets)
