@@ -10,11 +10,11 @@
 ################################################################################
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project("TKVulkan" LANGUAGES C VERSION 0.0.0.16)
+project("TKVulkan" LANGUAGES C VERSION 0.0.0.17)
 
 include(Helpers)
 run_checks(ON)
-create_target(OFF)
+create_target(OFF RAW_SOURCES "TKVulkan" "${TK_UNDERLYING_SYSTEM}" "Shaders")
 link_external(Vulkan COMPONENTS glslang)
 
 # We just hope that if GLSLang is found, glslang-default-resource-limits is
