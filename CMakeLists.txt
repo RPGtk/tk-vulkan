@@ -10,7 +10,7 @@
 ################################################################################
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project("TKVulkan" LANGUAGES C VERSION 0.0.0.19)
+project("TKVulkan" LANGUAGES C VERSION 0.0.0.20)
 
 include(Helpers)
 run_checks(ON)
@@ -27,6 +27,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE glslang-default-resource-limits)
 
 add_dependencies(${PROJECT_NAME} TKAssets)
 target_link_libraries(${PROJECT_NAME} PRIVATE TKAssets)
+
+add_dependencies(${PROJECT_NAME} TKLogging)
+target_include_directories(${PROJECT_NAME} PRIVATE "$<TARGET_PROPERTY:TKLogging,INTERFACE_INCLUDE_DIRECTORIES>")
 
 if(${TK_UNDERLYING})
     target_compile_definitions(${PROJECT_NAME} PRIVATE WAYLAND)
