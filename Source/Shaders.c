@@ -48,9 +48,10 @@ bool waterlily_compileShaders(const char **names, size_t count)
 
         waterlily_file_t file = {0};
         file.name = filename;
-        if (input.stage == GLSLANG_STAGE_VERTEX) file.type = TKAST_VERTEX_FILE;
+        if (input.stage == GLSLANG_STAGE_VERTEX)
+            file.type = WATERLILY_VERTEX_FILE;
         if (input.stage == GLSLANG_STAGE_FRAGMENT)
-            file.type = TKAST_FRAGMENT_FILE;
+            file.type = WATERLILY_FRAGMENT_FILE;
         waterlily_loadFile(&file);
         input.code = (const char *)file.content;
 
@@ -95,7 +96,7 @@ bool waterlily_compileShaders(const char **names, size_t count)
 
         waterlily_file_t outputFile = {
             .name = outputPath,
-            .type = TKAST_SPIRV_FILE,
+            .type = WATERLILY_SPIRV_FILE,
             .size =
                 glslang_program_SPIRV_get_size(program) * sizeof(unsigned int),
         };
