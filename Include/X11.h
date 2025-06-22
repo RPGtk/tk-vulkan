@@ -1,6 +1,6 @@
-#ifndef TKVULKAN_X11_H
-#define TKVULKAN_X11_H
+#ifndef WLVULKAN_X11_H
+#define WLVULKAN_X11_H
 
 void placeholder(void);
 
-#endif // TKVULKAN_X11_H
+#endif // WLVULKAN_X11_H

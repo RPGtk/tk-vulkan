@@ -1,5 +1,5 @@
-#include <TKAssets.h>
-#include <TKVulkan.h>
+#include <WLAssets.h>
+#include <WLVulkan.h>
 #include <glslang/Include/glslang_c_interface.h>
 #include <glslang/Public/resource_limits_c.h>
 #include <stdio.h>
@@ -8,7 +8,7 @@
 // TODO: Separate this into shared library or something so we can annihalate
 // TODO: the GLSLANG dep once finished.
 
-bool tkvul_compileShaders(const char **names, size_t count)
+bool waterlily_compileShaders(const char **names, size_t count)
 {
     glslang_initialize_process();
 
@@ -46,12 +46,12 @@ bool tkvul_compileShaders(const char **names, size_t count)
         if (strcmp(extension, "frag") == 0)
             input.stage = GLSLANG_STAGE_FRAGMENT;
 
-        tkast_file_t file = {0};
+        waterlily_file_t file = {0};
         file.name = filename;
         if (input.stage == GLSLANG_STAGE_VERTEX) file.type = TKAST_VERTEX_FILE;
         if (input.stage == GLSLANG_STAGE_FRAGMENT)
             file.type = TKAST_FRAGMENT_FILE;
-        tkast_loadFile(&file);
+        waterlily_loadFile(&file);
         input.code = (const char *)file.content;
 
         glslang_shader_t *shader = glslang_shader_create(&input);
@@ -89,18 +89,18 @@ bool tkvul_compileShaders(const char **names, size_t count)
             return false;
         }
 
-        char outputPath[tkast_maxPathLength];
+        char outputPath[waterlily_maxPathLength];
         sprintf(outputPath, "%s-%s", filename,
                 (input.stage == GLSLANG_STAGE_FRAGMENT ? "frag" : "vert"));
 
-        tkast_file_t outputFile = {
+        waterlily_file_t outputFile = {
             .name = outputPath,
             .type = TKAST_SPIRV_FILE,
             .size =
                 glslang_program_SPIRV_get_size(program) * sizeof(unsigned int),
         };
 
-        tkast_writeFile(
+        waterlily_writeFile(
             &outputFile,
             (const uint8_t *)glslang_program_SPIRV_get_ptr(program));
 

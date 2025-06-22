@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <vulkan/vulkan_wayland.h>
 
-VkSurfaceKHR tkvul_waylandCreate(VkInstance instance,
-                                 struct wl_display *display,
-                                 struct wl_surface *surface)
+VkSurfaceKHR waterlily_waylandCreate(VkInstance instance,
+                                     struct wl_display *display,
+                                     struct wl_surface *surface)
 {
     VkWaylandSurfaceCreateInfoKHR createInfo = {0};
     createInfo.sType = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR;
