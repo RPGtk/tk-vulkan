@@ -47,27 +47,29 @@ bool waterlily_vulkanCompileShaders(const char **names, size_t count)
         if (strcmp(extension, "frag") == 0)
             input.stage = GLSLANG_STAGE_FRAGMENT;
 
-        ageratum_file_t file = {0};
-        file.name = filename;
+        ageratum_file_t file = {.filename = filename};
         if (input.stage == GLSLANG_STAGE_VERTEX)
-            file.type = AGERATUM_VERTEX_FILE;
+            file.type = AGERATUM_GLSL_VERTEX;
         if (input.stage == GLSLANG_STAGE_FRAGMENT)
-            file.type = AGERATUM_FRAGMENT_FILE;
-        ageratum_loadFile(&file);
-        input.code = (const char *)file.content;
+            file.type = AGERATUM_GLSL_FRAGMENT;
+        ageratum_openFile(&file, AGERATUM_READ);
+        ageratum_getFileSize(&file);
+
+        char fileContents[file.size + 1];
+        ageratum_loadFile(&file, fileContents);
+        ageratum_closeFile(&file);
+        input.code = fileContents;
 
         glslang_shader_t *shader = glslang_shader_create(&input);
         if (!glslang_shader_preprocess(shader, &input))
         {
             puts("Failed to preprocess shader.");
-            free(file.content);
             free(currentName);
             return false;
         }
         if (!glslang_shader_parse(shader, &input))
         {
             puts("Failed to parse shader.");
-            free(file.content);
             free(currentName);
             return false;
         }
@@ -78,7 +80,6 @@ bool waterlily_vulkanCompileShaders(const char **names, size_t count)
                                                GLSLANG_MSG_VULKAN_RULES_BIT))
         {
             puts("Failed to link shader.");
-            free(file.content);
             free(currentName);
             return false;
         }
@@ -86,27 +87,25 @@ bool waterlily_vulkanCompileShaders(const char **names, size_t count)
         if (glslang_program_SPIRV_get_messages(program))
         {
             puts("Failed to get SPIRV messages for shader.");
-            free(file.content);
             free(currentName);
             return false;
         }
 
-        char outputPath[ageratum_maxPathLength];
-        sprintf(outputPath, "%s-%s", filename,
-                (input.stage == GLSLANG_STAGE_FRAGMENT ? "frag" : "vert"));
-
         ageratum_file_t outputFile = {
-            .name = outputPath,
-            .type = AGERATUM_SPIRV_FILE,
+            .filename = filename,
+            .type =
+                (input.stage == GLSLANG_STAGE_VERTEX ? AGERATUM_SPIRV_VERTEX
+                                                     : AGERATUM_SPIRV_FRAGMENT),
             .size =
                 glslang_program_SPIRV_get_size(program) * sizeof(unsigned int),
         };
 
+        ageratum_openFile(&outputFile, AGERATUM_WRITE);
         ageratum_writeFile(
-            &outputFile,
-            (const uint8_t *)glslang_program_SPIRV_get_ptr(program));
+            &outputFile, (const char *)glslang_program_SPIRV_get_ptr(program));
+        ageratum_closeFile(&outputFile);
 
-        free(file.content);
+        // free(file.content);
         free(currentName);
     }
 
