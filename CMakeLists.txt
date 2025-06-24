@@ -8,7 +8,7 @@
 ################################################################################
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project("WLVulkan" LANGUAGES C VERSION 0.0.0.23)
+project("WLVulkan" LANGUAGES C VERSION 0.0.0.24)
 
 include(Helpers)
 run_checks(ON)
@@ -25,7 +25,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE glslang-default-resource-limits)
 
 add_dependencies(${PROJECT_NAME} WLLogging)
 target_include_directories(${PROJECT_NAME} PRIVATE "$<TARGET_PROPERTY:WLLogging,INTERFACE_INCLUDE_DIRECTORIES>")
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/Assets")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/Ageratum")
 
 if(${WATERLILY_UNDERLYING})
     target_compile_definitions(${PROJECT_NAME} PRIVATE WAYLAND)
