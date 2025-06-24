@@ -1,4 +1,4 @@
-#define WLASSETS_IMPLEMENTATION
+#define AGERATUM_IMPLEMENTATION
 #include <Ageratum.h>
 #include <WLVulkan.h>
 #include <glslang/Include/glslang_c_interface.h>
@@ -47,13 +47,13 @@ bool waterlily_vulkanCompileShaders(const char **names, size_t count)
         if (strcmp(extension, "frag") == 0)
             input.stage = GLSLANG_STAGE_FRAGMENT;
 
-        waterlily_file_t file = {0};
+        ageratum_file_t file = {0};
         file.name = filename;
         if (input.stage == GLSLANG_STAGE_VERTEX)
-            file.type = WATERLILY_VERTEX_FILE;
+            file.type = AGERATUM_VERTEX_FILE;
         if (input.stage == GLSLANG_STAGE_FRAGMENT)
-            file.type = WATERLILY_FRAGMENT_FILE;
-        waterlily_loadFile(&file);
+            file.type = AGERATUM_FRAGMENT_FILE;
+        ageratum_loadFile(&file);
         input.code = (const char *)file.content;
 
         glslang_shader_t *shader = glslang_shader_create(&input);
@@ -91,18 +91,18 @@ bool waterlily_vulkanCompileShaders(const char **names, size_t count)
             return false;
         }
 
-        char outputPath[waterlily_maxPathLength];
+        char outputPath[ageratum_maxPathLength];
         sprintf(outputPath, "%s-%s", filename,
                 (input.stage == GLSLANG_STAGE_FRAGMENT ? "frag" : "vert"));
 
-        waterlily_file_t outputFile = {
+        ageratum_file_t outputFile = {
             .name = outputPath,
-            .type = WATERLILY_SPIRV_FILE,
+            .type = AGERATUM_SPIRV_FILE,
             .size =
                 glslang_program_SPIRV_get_size(program) * sizeof(unsigned int),
         };
 
-        waterlily_writeFile(
+        ageratum_writeFile(
             &outputFile,
             (const uint8_t *)glslang_program_SPIRV_get_ptr(program));
 
