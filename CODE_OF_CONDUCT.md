@@ -3,7 +3,7 @@
 ---
 
 ### Contributor Code of Conduct
-This code of conduct applies to all individuals who contribute to or interact with the RPGtk community in any official capacity. Should it omit a rule you believe should not be omitted, submit a pull request to the [dotfiles](https://github.com/RPGtk/tk-dotfiles) repository; changes will be disseminated from there.
+This code of conduct applies to all individuals who contribute to or interact with the Waterlily community in any official capacity. Should it omit a rule you believe should not be omitted, submit a pull request to the [dotfiles](https://github.com/waterlily-teams/.github) repository; changes will be disseminated from there.
 
 ---
 
@@ -32,7 +32,7 @@ Punishments will be defined on a case-by-case basis. Should the community find a
 
 #### Attribution
 
-This Code of Conduct is adapted from the [Contributor Covenant][https://www.contributor-covenant.org], version 2.0, available [here](https://www.contributor-covenant.org/version/2/0/code_of_conduct.html). Community Impact Guidelines were inspired by [Mozilla's code of conduct enforcement ladder](https://github.com/mozilla/diversity).
+This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org), version 2.0, available [here](https://www.contributor-covenant.org/version/2/0/code_of_conduct.html). Community Impact Guidelines were inspired by [Mozilla's code of conduct enforcement ladder](https://github.com/mozilla/diversity).
 
 For answers to common questions about this code of conduct, see the FAQ [here](https://www.contributor-covenant.org/faq). Translations are available [here](https://www.contributor-covenant.org/translations).
 
