@@ -1,3 +1,4 @@
+#define WLASSETS_IMPLEMENTATION
 #include <WLAssets.h>
 #include <WLVulkan.h>
 #include <glslang/Include/glslang_c_interface.h>
@@ -8,7 +9,7 @@
 // TODO: Separate this into shared library or something so we can annihalate
 // TODO: the GLSLANG dep once finished.
 
-bool waterlily_compileShaders(const char **names, size_t count)
+bool waterlily_vulkanCompileShaders(const char **names, size_t count)
 {
     glslang_initialize_process();
 

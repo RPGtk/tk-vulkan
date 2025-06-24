@@ -8,7 +8,7 @@
 ################################################################################
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project("WLVulkan" LANGUAGES C VERSION 0.0.0.22)
+project("WLVulkan" LANGUAGES C VERSION 0.0.0.23)
 
 include(Helpers)
 run_checks(ON)
@@ -23,11 +23,9 @@ cmake_path(GET Vulkan_glslang_LIBRARY PARENT_PATH GLSLANG_LIB_DIR)
 set_target_properties(glslang-default-resource-limits PROPERTIES IMPORTED_LOCATION "${GLSLANG_LIB_DIR}/libglslang-default-resource-limits.so")
 target_link_libraries(${PROJECT_NAME} PRIVATE glslang-default-resource-limits)
 
-add_dependencies(${PROJECT_NAME} WLAssets)
-target_link_libraries(${PROJECT_NAME} PRIVATE WLAssets)
-
 add_dependencies(${PROJECT_NAME} WLLogging)
 target_include_directories(${PROJECT_NAME} PRIVATE "$<TARGET_PROPERTY:WLLogging,INTERFACE_INCLUDE_DIRECTORIES>")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/Assets")
 
 if(${WATERLILY_UNDERLYING})
     target_compile_definitions(${PROJECT_NAME} PRIVATE WAYLAND)
