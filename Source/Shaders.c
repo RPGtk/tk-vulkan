@@ -1,9 +1,8 @@
 #define AGERATUM_IMPLEMENTATION
 #include <Ageratum.h>
 #include <WLVulkan.h>
-#include <glslang/Include/glslang_c_interface.h>
-#include <glslang/Public/resource_limits_c.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 bool waterlily_vulkanCompileShaders(const char **names, size_t count)
