@@ -8,20 +8,12 @@
 ################################################################################
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project("WLVulkan" LANGUAGES C VERSION 0.0.0.26)
+project("WLVulkan" LANGUAGES C VERSION 0.0.0.27)
 
 include(Helpers)
 run_checks(ON)
 create_target(OFF RAW_SOURCES "WLVulkan" "${WATERLILY_UNDERLYING_SYSTEM}" "Shaders")
-link_external(Vulkan COMPONENTS glslang)
-
-# We just hope that if GLSLang is found, glslang-default-resource-limits is
-# also found.
-add_library(glslang-default-resource-limits SHARED IMPORTED)
-
-cmake_path(GET Vulkan_glslang_LIBRARY PARENT_PATH GLSLANG_LIB_DIR)
-set_target_properties(glslang-default-resource-limits PROPERTIES IMPORTED_LOCATION "${GLSLANG_LIB_DIR}/libglslang-default-resource-limits.so")
-target_link_libraries(${PROJECT_NAME} PRIVATE glslang-default-resource-limits)
+link_external(Vulkan)
 
 add_dependencies(${PROJECT_NAME} WLLogging)
 target_include_directories(${PROJECT_NAME} PRIVATE "$<TARGET_PROPERTY:WLLogging,INTERFACE_INCLUDE_DIRECTORIES>")
