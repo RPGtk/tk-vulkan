@@ -6,9 +6,6 @@
 #include <stdio.h>
 #include <string.h>
 
-// TODO: Separate this into shared library or something so we can annihalate
-// TODO: the GLSLANG dep once finished.
-
 bool waterlily_vulkanCompileShaders(const char **names, size_t count)
 {
     for (size_t i = 0; i < count; i++)
