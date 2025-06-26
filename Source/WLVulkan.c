@@ -198,30 +198,14 @@ VkPresentModeKHR *getSurfaceModes(VkPhysicalDevice device)
     return pModes;
 }
 
-// TODO: File utilities.
-
-static void compileShader(const char *name, size_t *size, uint32_t **bytes)
-{
-    FILE *file = fopen(name, "r");
-
-    (void)fseek(file, 0, SEEK_END);
-    *size = ftell(file);
-    (void)fseek(file, 0, SEEK_SET);
-
-    *bytes = malloc(*size);
-    long read = fread(*bytes, 1, *size, file);
-    (void)read; // TODO: Implement check.
-
-    (void)fclose(file);
-}
-
 bool createPipeline(void)
 {
     size_t vertexSize, fragmentSize;
     uint32_t *vertexBytes, *fragmentBytes;
-    compileShader("default.vert.spv", &vertexSize, &vertexBytes);
-    compileShader("default.frag.spv", &fragmentSize, &fragmentBytes);
-    printf("%zu :: %zu\n", vertexSize, fragmentSize);
+    waterlily_vulkanGetShader("default.vert", (char **)&vertexBytes,
+                              &vertexSize);
+    waterlily_vulkanGetShader("default.frag", (char **)&fragmentBytes,
+                              &fragmentSize);
 
     VkShaderModuleCreateInfo vertexCreateInfo = {0};
     vertexCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -453,7 +437,7 @@ bool waterlily_vulkanCreate(const char *name, uint32_t version)
     applicationInfo.applicationVersion = version;
     applicationInfo.pEngineName = nullptr;
     applicationInfo.engineVersion = 0;
-    applicationInfo.apiVersion = VK_API_VERSION_1_0;
+    applicationInfo.apiVersion = VK_API_VERSION_1_3;
 
     VkInstanceCreateInfo instanceInfo = {0};
     instanceInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;

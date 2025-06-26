@@ -14,4 +14,6 @@ bool waterlily_vulkanInitialize(uint32_t framebufferWidth,
 
 bool waterlily_vulkanCompileShaders(const char **names, size_t count);
 
+bool waterlily_vulkanGetShader(const char *name, char **contents, size_t *size);
+
 #endif // WLVULKAN_MAIN_H
