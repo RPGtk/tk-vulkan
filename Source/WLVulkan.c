@@ -31,11 +31,14 @@ static VkRenderPass pRenderpass = nullptr;
 static VkPipelineLayout pPipelineLayout = nullptr;
 static VkPipeline pGraphicsPipeline = nullptr;
 static VkCommandPool pCommandPool;
-static VkCommandBuffer pCommandBuffer;
+static VkCommandBuffer *pCommandBuffers;
 
-static VkSemaphore pImageAvailableSemaphore;
-static VkSemaphore pRenderFinishedSemaphore;
-static VkFence pFence;
+static VkSemaphore *pImageAvailableSemaphores;
+static VkSemaphore *pRenderFinishedSemaphores;
+static VkFence *pFences;
+
+static const int MAX_FRAMES_IN_FLIGHT = 2;
+static uint32_t currentFrame = 0;
 
 // TODO: Get this the fuck outta here.
 // https://stackoverflow.com/questions/427477/fastest-way-to-clamp-a-real-fixed-floating-point-value#16659263
@@ -504,13 +507,14 @@ bool createCommandBuffers(void)
         return false;
     }
 
+    pCommandBuffers = malloc(sizeof(VkCommandBuffer) * MAX_FRAMES_IN_FLIGHT);
     VkCommandBufferAllocateInfo allocInfo = {0};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.commandPool = pCommandPool;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandBufferCount = 1;
+    allocInfo.commandBufferCount = MAX_FRAMES_IN_FLIGHT;
 
-    if (vkAllocateCommandBuffers(pLogicalDevice, &allocInfo, &pCommandBuffer) !=
+    if (vkAllocateCommandBuffers(pLogicalDevice, &allocInfo, pCommandBuffers) !=
         VK_SUCCESS)
     {
         fprintf(stderr, "Failed to create command buffer.\n");
@@ -528,15 +532,23 @@ bool createSyncObjects(void)
     fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
     fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-    if (vkCreateSemaphore(pLogicalDevice, &semaphoreInfo, nullptr,
-                          &pImageAvailableSemaphore) != VK_SUCCESS ||
-        vkCreateSemaphore(pLogicalDevice, &semaphoreInfo, nullptr,
-                          &pRenderFinishedSemaphore) != VK_SUCCESS ||
-        vkCreateFence(pLogicalDevice, &fenceInfo, nullptr, &pFence) !=
-            VK_SUCCESS)
+    pImageAvailableSemaphores =
+        malloc(sizeof(VkSemaphore) * MAX_FRAMES_IN_FLIGHT);
+    pRenderFinishedSemaphores =
+        malloc(sizeof(VkSemaphore) * MAX_FRAMES_IN_FLIGHT);
+    pFences = malloc(sizeof(VkFence) * MAX_FRAMES_IN_FLIGHT);
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
     {
-        fprintf(stderr, "Failed to create sync object.\n");
-        return false;
+        if (vkCreateSemaphore(pLogicalDevice, &semaphoreInfo, nullptr,
+                              &pImageAvailableSemaphores[i]) != VK_SUCCESS ||
+            vkCreateSemaphore(pLogicalDevice, &semaphoreInfo, nullptr,
+                              &pRenderFinishedSemaphores[i]) != VK_SUCCESS ||
+            vkCreateFence(pLogicalDevice, &fenceInfo, nullptr, &pFences[i]) !=
+                VK_SUCCESS)
+        {
+            fprintf(stderr, "Failed to create sync object.\n");
+            return false;
+        }
     }
     return true;
 }
@@ -762,37 +774,74 @@ bool waterlily_vulkanCreateSurface(void **data)
     return true;
 }
 
+void cleanupSwapchain(void)
+{
+    for (size_t i = 0; i < pImageCount; i++)
+    {
+        vkDestroyFramebuffer(pLogicalDevice, pSwapchainFramebuffers[i],
+                             nullptr);
+        vkDestroyImageView(pLogicalDevice, pSwapchainImages[i], nullptr);
+    }
+    vkDestroySwapchainKHR(pLogicalDevice, pSwapchain, nullptr);
+}
+
+bool recreateSwapchain(uint32_t framebufferWidth, uint32_t framebufferHeight)
+{
+    vkDeviceWaitIdle(pLogicalDevice);
+
+    cleanupSwapchain();
+    if (!createSwapchain(framebufferWidth, framebufferHeight)) return false;
+    if (!createFramebuffers(framebufferWidth, framebufferHeight)) return false;
+
+    return true;
+}
+
 bool waterlily_vulkanRenderFrame(uint32_t framebufferWidth,
                                  uint32_t framebufferHeight)
 {
-    vkWaitForFences(pLogicalDevice, 1, &pFence, VK_TRUE, UINT64_MAX);
-    vkResetFences(pLogicalDevice, 1, &pFence);
+    vkWaitForFences(pLogicalDevice, 1, &pFences[currentFrame], VK_TRUE,
+                    UINT64_MAX);
 
     uint32_t imageIndex;
-    vkAcquireNextImageKHR(pLogicalDevice, pSwapchain, UINT64_MAX,
-                          pImageAvailableSemaphore, VK_NULL_HANDLE,
-                          &imageIndex);
-    vkResetCommandBuffer(pCommandBuffer, 0);
-    if (!recordCommandBuffer(pCommandBuffer, imageIndex, framebufferWidth,
-                             framebufferHeight))
+    VkResult result = vkAcquireNextImageKHR(
+        pLogicalDevice, pSwapchain, UINT64_MAX,
+        pImageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+    if (result == VK_ERROR_OUT_OF_DATE_KHR)
+    {
+        if (!recreateSwapchain(framebufferWidth, framebufferHeight))
+            return false;
+        return true;
+    }
+    else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+    {
+        fprintf(stderr, "Failed to acquire swapchain image.\n");
+        return false;
+    }
+
+    vkResetFences(pLogicalDevice, 1, &pFences[currentFrame]);
+
+    vkResetCommandBuffer(pCommandBuffers[currentFrame], 0);
+    if (!recordCommandBuffer(pCommandBuffers[currentFrame], imageIndex,
+                             framebufferWidth, framebufferHeight))
         return false;
 
     VkSubmitInfo submitInfo = {0};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-    VkSemaphore waitSemaphores[] = {pImageAvailableSemaphore};
+    VkSemaphore waitSemaphores[] = {pImageAvailableSemaphores[currentFrame]};
     VkPipelineStageFlags waitStages[] = {
         VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
     submitInfo.waitSemaphoreCount = 1;
     submitInfo.pWaitSemaphores = waitSemaphores;
     submitInfo.pWaitDstStageMask = waitStages;
     submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &pCommandBuffer;
+    submitInfo.pCommandBuffers = &pCommandBuffers[currentFrame];
 
-    VkSemaphore signalSemaphores[] = {pRenderFinishedSemaphore};
+    VkSemaphore signalSemaphores[] = {pRenderFinishedSemaphores[currentFrame]};
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
-    if (vkQueueSubmit(pGraphicsQueue, 1, &submitInfo, pFence) != VK_SUCCESS)
+    if (vkQueueSubmit(pGraphicsQueue, 1, &submitInfo, pFences[currentFrame]) !=
+        VK_SUCCESS)
     {
         fprintf(stderr, "Failed to submit to the queue.\n");
         return false;
@@ -807,8 +856,20 @@ bool waterlily_vulkanRenderFrame(uint32_t framebufferWidth,
     presentInfo.swapchainCount = 1;
     presentInfo.pSwapchains = swapChains;
     presentInfo.pImageIndices = &imageIndex;
-    vkQueuePresentKHR(pPresentQueue, &presentInfo);
 
+    result = vkQueuePresentKHR(pPresentQueue, &presentInfo);
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
+    {
+        if (!recreateSwapchain(framebufferWidth, framebufferHeight))
+            return false;
+    }
+    else if (result != VK_SUCCESS)
+    {
+        fprintf(stderr, "Failed to present swapchain image.\n");
+        return false;
+    }
+
+    currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
     return true;
 }
 
