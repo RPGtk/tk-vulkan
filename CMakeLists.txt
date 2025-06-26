@@ -1,6 +1,6 @@
 ################################################################################
-## The configuration files for the Waterlily Vulkan project. This requires CMake 
-## version 3.10 or higher. The following options affect this files output:
+## The configuration files for the Waterlily Geranium project. This requires 
+## CMake version 3.10 or higher.
 ##
 ## Copyright (c) 2025 - the Waterlily Team
 ## This source code is under the GPLv3. For information on what that entails,
@@ -8,11 +8,11 @@
 ################################################################################
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project("WLVulkan" LANGUAGES C VERSION 0.0.0.33)
+project("Geranium" LANGUAGES C VERSION 0.0.0.33)
 
 include(Helpers)
 run_checks(ON)
-create_target(OFF RAW_SOURCES "WLVulkan" "${WATERLILY_UNDERLYING_SYSTEM}" "Shaders")
+create_target(OFF RAW_SOURCES "Geranium" "${WATERLILY_UNDERLYING_SYSTEM}" "Shaders")
 link_external(Vulkan)
 
 add_dependencies(${PROJECT_NAME} WLLogging)
