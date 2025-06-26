@@ -27,7 +27,7 @@ bool waterlily_vulkanCompileShaders(const char **names, size_t count)
             .type = (strcmp(extension, "frag") == 0 ? AGERATUM_GLSL_FRAGMENT
                                                     : AGERATUM_GLSL_VERTEX),
         };
-        ageratum_glslToSPIRV(&file);
+        if (!ageratum_glslToSPIRV(&file)) return false;
 
         free(currentName);
     }
