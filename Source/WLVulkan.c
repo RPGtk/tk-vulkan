@@ -4,12 +4,6 @@
 #include <string.h>
 #include <vulkan/vulkan.h>
 
-#ifdef WAYLAND
-#include <Include/Wayland.h>
-#elifdef X11
-#include <Include/X11.h>
-#endif
-
 static VkInstance pInstance = nullptr;
 static VkPhysicalDevice pPhysicalDevice = nullptr;
 static VkDevice pLogicalDevice = nullptr;
@@ -761,13 +755,10 @@ bool waterlily_vulkanInitialize(uint32_t framebufferWidth,
 
 bool waterlily_vulkanCreateSurface(void **data)
 {
-#ifdef WAYLAND
-    pSurface = waterlily_vulkanWaylandCreate(pInstance, data[0], data[1]);
+    VkSurfaceKHR waterlily_vulkanSurfaceCreate(VkInstance instance,
+                                               void **data);
+    pSurface = waterlily_vulkanSurfaceCreate(pInstance, data);
     if (pSurface == nullptr) return false;
-#elifdef X11
-// TODO: Implement X11.
-#endif
-
     return true;
 }
 
