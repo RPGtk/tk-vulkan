@@ -23,7 +23,7 @@ bool waterlily_vulkanCompileShaders(const char **names, size_t count)
         char *extension = strtok(nullptr, ".");
 
         ageratum_file_t file = {
-            .filename = (char *)filename,
+            .basename = (char *)filename,
             .type = (strcmp(extension, "frag") == 0 ? AGERATUM_GLSL_FRAGMENT
                                                     : AGERATUM_GLSL_VERTEX),
         };
