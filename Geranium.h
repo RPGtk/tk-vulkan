@@ -5,6 +5,11 @@
 #define __need_size_t
 #include <stddef.h>
 
+#define GERANIUM_MAJOR_VERSION 0
+#define GERANIUM_MINOR_VERSION 0
+#define GERANIUM_PATCH_VERSION 0
+#define GERANIUM_TWEAK_VERSION 36
+
 bool waterlily_vulkanCreate(const char *name, uint32_t version);
 
 bool waterlily_vulkanCreateSurface(void **data);
