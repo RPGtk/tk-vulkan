@@ -8,7 +8,7 @@
 ################################################################################
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project("WLVulkan" LANGUAGES C VERSION 0.0.0.32)
+project("WLVulkan" LANGUAGES C VERSION 0.0.0.33)
 
 include(Helpers)
 run_checks(ON)
