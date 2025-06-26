@@ -1,6 +1,6 @@
 ################################################################################
-## The configuration files for the Waterlily Geranium project. This requires 
-## CMake version 3.10 or higher.
+## The configuration files for the Geranium project. This requires CMake version 
+## 3.10 or higher.
 ##
 ## Copyright (c) 2025 - the Waterlily Team
 ## This source code is under the GPLv3. For information on what that entails,
