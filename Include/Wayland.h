@@ -4,8 +4,8 @@
 #include <vulkan/vulkan.h>
 #include <wayland-client.h>
 
-VkSurfaceKHR waterlily_waylandCreate(VkInstance instance,
-                                     struct wl_display *display,
-                                     struct wl_surface *surface);
+VkSurfaceKHR waterlily_vulkanWaylandCreate(VkInstance instance,
+                                           struct wl_display *display,
+                                           struct wl_surface *surface);
 
 #endif // WLVULKAN_WAYLAND_H

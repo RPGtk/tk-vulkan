@@ -173,19 +173,6 @@ bool createSwapchain(uint32_t framebufferWidth, uint32_t framebufferHeight)
     return true;
 }
 
-bool waterlily_createSurface(void **data)
-{
-#ifdef WAYLAND
-    pSurface = waterlily_waylandCreate(pInstance, data[0], data[1]);
-    if (pSurface == nullptr) return false;
-#elifdef X11
-    (void)data;
-    // TODO: Implement X11.
-#endif
-
-    return true;
-}
-
 VkSurfaceFormatKHR *getSurfaceFormats(VkPhysicalDevice device)
 {
     if (pFormats != nullptr) return pFormats;
@@ -458,7 +445,7 @@ bool createDevice(uint32_t framebufferWidth, uint32_t framebufferHeight)
     return true;
 }
 
-bool waterlily_connect(const char *name, uint32_t version)
+bool waterlily_vulkanCreate(const char *name, uint32_t version)
 {
     VkApplicationInfo applicationInfo = {0};
     applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -497,16 +484,17 @@ bool waterlily_connect(const char *name, uint32_t version)
     return true;
 }
 
-bool waterlily_initialize(uint32_t framebufferWidth, uint32_t framebufferHeight)
+bool waterlily_vulkanInitialize(uint32_t framebufferWidth,
+                                uint32_t framebufferHeight)
 {
     if (!createDevice(framebufferWidth, framebufferHeight)) return false;
     return true;
 }
 
-bool waterlily_connectSurface(void **data)
+bool waterlily_vulkanCreateSurface(void **data)
 {
 #ifdef WAYLAND
-    pSurface = waterlily_waylandCreate(pInstance, data[0], data[1]);
+    pSurface = waterlily_vulkanWaylandCreate(pInstance, data[0], data[1]);
     if (pSurface == nullptr) return false;
 #elifdef X11
 // TODO: Implement X11.
