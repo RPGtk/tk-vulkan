@@ -22,4 +22,6 @@ bool geranium_compileShaders(const char **names, size_t count);
 bool geranium_render(uint32_t framebufferWidth,
                                  uint32_t framebufferHeight);
 
+bool geranium_sync(void);
+
 #endif // GERANIUM_MAIN_H
